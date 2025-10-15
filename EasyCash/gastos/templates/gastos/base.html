@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Easy Cash{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gris claro de fondo */
+        }
+        /* Estilos personalizados para la aplicación */
+        .container-padding {
+            padding-left: 1rem; /* p-4 */
+            padding-right: 1rem; /* p-4 */
+        }
+        @media (min-width: 640px) { /* sm: */
+            .container-padding {
+                padding-left: 2rem; /* sm:p-8 */
+                padding-right: 2rem; /* sm:p-8 */
+            }
+        }
+        @media (min-width: 1024px) { /* lg: */
+            .container-padding {
+                padding-left: 4rem; /* lg:p-16 */
+                padding-right: 4rem; /* lg:p-16 */
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <nav class="bg-gradient-to-r from-red-800 to-gray-900 p-4 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center container-padding">
+            <a href="{% url 'gastos:dashboard' %}" class="text-white text-3xl font-bold tracking-tight rounded-md px-3 py-1 hover:bg-blue-700 transition duration-300">
+                Easy Cash
+            </a>
+            <div class="space-x-4 flex items-center">
+                <a href="{% url 'gastos:dashboard' %}" class="text-white text-lg font-medium hover:text-blue-200 transition duration-300 rounded-md px-3 py-2 hover:bg-blue-700">Dashboard</a>
+                <a href="{% url 'gastos:lista_transacciones' %}" class="text-white text-lg font-medium hover:text-blue-200 transition duration-300 rounded-md px-3 py-2 hover:bg-blue-700">Transacciones</a>
+                <a href="{% url 'gastos:lista_categorias' %}" class="text-white text-lg font-medium hover:text-blue-200 transition duration-300 rounded-md px-3 py-2 hover:bg-blue-700">Categorías</a>
+                <div class="relative group">
+                    <button class="text-white text-lg font-medium hover:text-blue-200 transition duration-300 rounded-md px-3 py-2 hover:bg-blue-700 focus:outline-none">
+                        Reportes
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 invisible group-hover:visible group-focus-within:visible">
+                        <a href="{% url 'gastos:reporte_mensual' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md">Reporte Mensual</a>
+                        <a href="{% url 'gastos:reporte_por_categoria' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md">Reporte por Categoría</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow container max-w-7xl mx-auto py-8 px-4 sm:px-8 lg:px-16">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 text-center mt-auto">
+        <div class="max-w-7xl mx-auto container-padding">
+            <p>Easy Cash - Juan José Muñoz Jurado</p>
+        </div>
+    </footer>
+
+    <script>
+        // Script para manejar el menú desplegable de "Reportes" en dispositivos táctiles
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportesButton = document.querySelector('.relative.group button');
+            const dropdown = document.querySelector('.relative.group .absolute');
+
+            // Activar o desactivar la visibilidad del menú desplegable al hacer clic en el botón
+            reportesButton.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent document click from closing it immediately
+                dropdown.classList.toggle('opacity-0');
+                dropdown.classList.toggle('invisible');
+                dropdown.classList.toggle('visible');
+            });
+
+            // Cerrar el menú desplegable al hacer clic fuera
+            document.addEventListener('click', function(event) {
+                if (!reportesButton.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('opacity-0');
+                    dropdown.classList.add('invisible');
+                    dropdown.classList.remove('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

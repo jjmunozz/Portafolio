@@ -1,0 +1,39 @@
+{% extends 'gastos/base.html' %}
+
+{% block title %}Reporte Mensual - Easy Cash{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-xl mb-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-6 text-center">Reporte Mensual de Ingresos y Gastos</h1>
+
+    {% if reporte_mensual %}
+    <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mes y Año</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Ingresos</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Gastos</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for mes_data in reporte_mensual %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ mes_data.mes_nombre }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-green-600 font-semibold">${{ mes_data.ingresos|floatformat:2 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-red-600 font-semibold">${{ mes_data.gastos|floatformat:2 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold
+                                {% if mes_data.balance >= 0 %}text-blue-800{% else %}text-orange-800{% endif %}">
+                        ${{ mes_data.balance|floatformat:2 }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-center py-8 bg-gray-50 rounded-lg shadow-md">No hay datos suficientes para generar el reporte mensual.</p>
+    {% endif %}
+</div>
+{% endblock %}

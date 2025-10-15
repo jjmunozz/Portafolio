@@ -1,0 +1,57 @@
+{% extends 'gastos/base.html' %}
+
+{% block title %}{{ titulo }} - Easy Cash{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-xl mb-8 max-w-2xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-800 mb-6 text-center">{{ titulo }}</h1>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %} {# Protección CSRF requerida por Django para formularios POST #}
+
+        {# Mostrar errores generales del formulario si los hay #}
+        {% if form.non_field_errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">¡Error!</strong>
+                <span class="block sm:inline">{{ form.non_field_errors }}</span>
+            </div>
+        {% endif %}
+
+        {# Iterar sobre cada campo del formulario para renderizarlo #}
+        {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">
+                    {{ field.label }}
+                    {% if field.field.required %}
+                        <span class="text-red-500">*</span> {# Indica que el campo es obligatorio #}
+                    {% endif %}
+                </label>
+                {{ field }} {# Renderiza el widget del campo (input, select, textarea) #}
+
+                {# Mostrar errores específicos de este campo si los hay #}
+                {% if field.errors %}
+                    <ul class="text-red-600 text-sm mt-1 list-disc list-inside">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                
+                {# Texto de ayuda para el campo #}
+                {% if field.help_text %}
+                    <p class="text-gray-500 text-xs italic mt-1">{{ field.help_text }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 shadow-lg w-full sm:w-auto">
+                {% if es_edicion %}Guardar Cambios{% else %}Agregar Transacción{% endif %}
+            </button>
+            <a href="{% url 'gastos:lista_transacciones' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-md transition duration-300 shadow-md w-full sm:w-auto text-center">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

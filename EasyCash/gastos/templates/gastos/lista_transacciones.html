@@ -1,0 +1,57 @@
+{% extends 'gastos/base.html' %}
+
+{% block title %}Transacciones - Easy Cash{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-xl mb-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-6 text-center">Todas las Transacciones</h1>
+
+    <div class="flex justify-end mb-6">
+        <a href="{% url 'gastos:agregar_transaccion' %}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 shadow-md text-center">
+            + Agregar Nueva Transacción
+        </a>
+    </div>
+
+    {% if transacciones %}
+    <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for transaccion in transacciones %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ transaccion.fecha|date:"d M, Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ transaccion.descripcion|default:"-" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ transaccion.categoria.nombre|default:"Sin Categoría" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium
+                                {% if transaccion.tipo == 'Ingreso' %}text-green-600{% else %}text-red-600{% endif %}">
+                        {{ transaccion.tipo }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold
+                                {% if transaccion.tipo == 'Ingreso' %}+{% else %}-{% endif %}${{ transaccion.monto|floatformat:2 }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{% url 'gastos:editar_transaccion' transaccion.pk %}" class="text-blue-600 hover:text-blue-900 mr-4">Editar</a>
+                        <form action="{% url 'gastos:eliminar_transaccion' transaccion.pk %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Estás seguro de que quieres eliminar esta transacción?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-center py-8 bg-gray-50 rounded-lg shadow-md">No hay transacciones registradas. ¡Empieza a añadir algunas!</p>
+    {% endif %}
+</div>
+{% endblock %}
